@@ -1,5 +1,5 @@
 ﻿{
-	"version": 1512063501,
+	"version": 1512076994,
 	"fileList": [
 		"data.js",
 		"c2runtime.js",
@@ -27,6 +27,15 @@
 		"images/gems-sheet0.png",
 		"images/spritefont.png",
 		"images/tiledbackground.png",
+		"images/sprite8-sheet0.png",
+		"images/sprite8-sheet1.png",
+		"images/sprite10-sheet0.png",
+		"images/sprite10-sheet1.png",
+		"images/gameover-sheet0.png",
+		"images/complete-sheet0.png",
+		"media/dead.m4a",
+		"media/dead.ogg",
+		"media/melodyloops-preview-happy-place-0m30s.ogg",
 		"icon-16.png",
 		"icon-32.png",
 		"icon-114.png",
