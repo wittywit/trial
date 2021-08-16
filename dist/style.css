@@ -1,0 +1,7 @@
+body {
+    background: #E9E9E9;
+    color: #333;
+    font: 1em/1.3em "Helvetica Neue", Helvetica, Arial, Verdana, sans-serif; /* 16px / 21px */
+    text-shadow: rgba(255,255,255,0.8) 0 1px 0;
+    text-align: center;
+}
