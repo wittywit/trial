@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Shake: Reminiscent of memories of planet A</title>
+		<meta name="description" content="Some liquid distortion effects applied to an image slideshow using canvas, PixiJS and Greensock" />
+		<meta name="keywords" content="web development, canvas, distortion, liquid, effect, slideshow, javascript" />
+		<meta name="author" content="Yannis Yannakopoulos for Codrops" />
+		<link rel="shortcut icon" href="favicon.ico">
+		<link rel="stylesheet" type="text/css" href="css/normalize.css" />
+		
+		<link rel="stylesheet" type="text/css" href="css/component.css" />
+		
+		<script>document.documentElement.className = 'js';</script>
+	</head>
+	<body class="demo-1 loading">
+		
+		<main class="site-wrapper">
+			
+			<div class="content">
+				<div class="slide-wrapper">
+					<div class="slide-item">
+						<img src="img/1.jpg" class="slide-item__image">
+					</div>
+					<div class="slide-item">
+						<img src="img/2.jpg" class="slide-item__image">
+					</div>
+					<div class="slide-item">
+						<img src="img/3.jpg" class="slide-item__image">
+					</div>					
+				</div>
+				
+			</div>
+		</main>
+		
+		<script src="js/pixi.min.js"></script>
+		<script src="js/TweenMax.min.js"></script>
+		<script src="js/main.js"></script>
+		<script src="js/imagesloaded.pkgd.min.js"></script>
+		<script src="https://cdn.rawgit.com/alexgibson/shake.js/master/shake.js"></script>
+		
+		
+		
+		<script>
+			
+			
+			window.onload = function() {
+    //create a new instance of shake.js.
+    var myShakeEvent = new Shake({
+        threshold: 15
+    });
+    // start listening to device motion
+    myShakeEvent.start();
+    // register a shake event
+    window.addEventListener('shake', shakeEventDidOccur, false);
+    //shake event callback
+    function shakeEventDidOccur () {
+        //put your own code here etc.
+      add();
+        //alert('Shake!');
+    }
+    $('span').bind( "touchstart", function(e){add();} );
+
+
+};
+
+
+function runme() {
+    var arr = ["http://www.bbc.co.uk/", "http://www.yahoo.com/", "http://www.stackoverflow.com/"];
+    var value = arr[Math.floor(Math.random() * arr.length)];
+    window.open(value);
+    // window.location = value;     // remove the comment at the beginning to actually navigate
+}
+
+
+add = function(){
+  runme();
+   // window.open("https://codepen.io/wittywit/full/wvdbooK");
+ 
+}
+		
+		</script>
+		
+		
+		
+		
+		
+		
+		
+		<script>
+			imagesLoaded(document.body, () => document.body.classList.remove('loading'));
+
+			var spriteImages 	= document.querySelectorAll( '.slide-item__image' );
+			var spriteImagesSrc = [];
+
+			for ( var i = 0; i < spriteImages.length; i++ ) {
+				var img = spriteImages[i];
+				spriteImagesSrc.push( img.getAttribute('src' ) );
+			}
+
+			var initCanvasSlideshow = new CanvasSlideshow({
+				sprites: spriteImagesSrc,
+				displacementImage: 'img/dmaps/2048x2048/clouds.jpg',
+				autoPlay: true,
+				autoPlaySpeed: [10, 3],
+				displaceScale: [200, 70]
+			});
+		</script>
+		
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+		
+		
+	</body>
+</html>
