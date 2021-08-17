@@ -20,7 +20,7 @@ window.onload = function() {
 
 
 function runme() {
-    var arr = ["http://www.bbc.co.uk/", "http://www.yahoo.com/", "http://www.stackoverflow.com/"];
+    var arr = ["http://wittywit.com/trial/shu/birdy/", "http://wittywit.com/trial/shu/ocean/"];
     var value = arr[Math.floor(Math.random() * arr.length)];
     window.open(value);
     // window.location = value;     // remove the comment at the beginning to actually navigate
