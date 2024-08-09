@@ -3,27 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Background Replacement</title>
+    <title>Webcam Background Replacement</title>
     <style>
-        video {
-            display: none;
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
         }
-        canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-        button {
-            margin: 10px;
-            font-size: 18px;
+        video, canvas {
+            display: block;
+            margin-bottom: 10px;
+            width: 640px;
+            height: 480px;
         }
     </style>
 </head>
 <body>
-    <h1>Background Replacement</h1>
-    <button id="bg1">Background 1</button>
-    <button id="bg2">Background 2</button>
-    <button id="bg3">Background 3</button>
     <video id="video" autoplay></video>
     <canvas id="canvas"></canvas>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation"></script>
@@ -33,20 +31,10 @@
         const video = document.getElementById('video');
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
-        let selectedBackground = 0;
 
-        const backgrounds = [
-            'background1.jpg',
-            'background2.jpg',
-            'background3.jpg'
-        ];
-
-        const bgImages = [];
-        for (let i = 0; i < backgrounds.length; i++) {
-            const img = new Image();
-            img.src = backgrounds[i];
-            bgImages.push(img);
-        }
+        // Load the background image
+        const backgroundImage = new Image();
+        backgroundImage.src = 'background1.jpg';
 
         const selfieSegmentation = new SelfieSegmentation({locateFile: (file) => {
             return `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`;
@@ -62,8 +50,8 @@
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
 
-            // Draw the selected background
-            ctx.drawImage(bgImages[selectedBackground], 0, 0, canvas.width, canvas.height);
+            // Draw the background image
+            ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
 
             // Create a mask from the segmentation result
             const maskImageData = ctx.createImageData(canvas.width, canvas.height);
@@ -77,7 +65,7 @@
 
             ctx.putImageData(maskImageData, 0, 0);
 
-            // Composite the foreground on top of the background
+            // Composite the foreground (video feed) on top of the background
             ctx.globalCompositeOperation = 'source-in';
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
             ctx.globalCompositeOperation = 'source-over';
@@ -91,19 +79,6 @@
             height: 480
         });
         camera.start();
-
-        // Button event listeners to change the background
-        document.getElementById('bg1').addEventListener('click', () => {
-            selectedBackground = 0;
-        });
-
-        document.getElementById('bg2').addEventListener('click', () => {
-            selectedBackground = 1;
-        });
-
-        document.getElementById('bg3').addEventListener('click', () => {
-            selectedBackground = 2;
-        });
     </script>
 </body>
 </html>
