@@ -5,114 +5,97 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Background Replacement</title>
     <style>
-        body {
-            text-align: center;
-            font-family: Arial, sans-serif;
+        video {
+            position: absolute;
+            top: 0;
+            left: 0;
         }
-        canvas {
-            border: 1px solid black;
-        }
-        .button-container {
-            margin-top: 10px;
+        #canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
         }
         button {
-            padding: 10px;
-            margin: 5px;
+            position: relative;
+            z-index: 100;
+            margin: 10px;
+            font-size: 18px;
         }
     </style>
 </head>
 <body>
     <h1>Background Replacement</h1>
+    <button id="bg1">Background 1</button>
+    <button id="bg2">Background 2</button>
+    <button id="bg3">Background 3</button>
+    <video id="video" autoplay></video>
     <canvas id="canvas"></canvas>
-    <div class="button-container">
-        <button onclick="changeBackground(1)">Background 1</button>
-        <button onclick="changeBackground(2)">Background 2</button>
-        <button onclick="changeBackground(3)">Background 3</button>
-    </div>
-    
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/body-pix"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils"></script>
 
     <script>
-        let net;
-        let backgroundImages = [];
-        let currentBackground = 0;
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let selectedBackground = 0;
 
-        async function setupWebcam() {
-            const webcamElement = document.createElement('video');
-            webcamElement.setAttribute('autoplay', '');
-            webcamElement.setAttribute('muted', '');
-            webcamElement.setAttribute('playsinline', '');
-            document.body.appendChild(webcamElement);
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({
-                    video: true
-                });
-                webcamElement.srcObject = stream;
-                
-                return new Promise((resolve) => {
-                    webcamElement.onloadedmetadata = () => {
-                        resolve(webcamElement);
-                    };
-                });
-            } catch (error) {
-                console.error("Error accessing webcam: ", error);
-                alert("Could not access the camera. Please ensure you have granted the necessary permissions.");
-            }
-        }
+        const backgrounds = [
+            'background1.jpg',
+            'background2.jpg',
+            'background3.jpg'
+        ];
 
-        async function loadBackgroundImages() {
-            for (let i = 1; i <= 3; i++) {
-                const img = new Image();
-                img.src = `background${i}.jpg`; // Ensure these files are in the same directory
-                await img.decode();
-                backgroundImages.push(img);
-            }
-        }
+        // Set up the MediaPipe Selfie Segmentation model
+        const selfieSegmentation = new SelfieSegmentation({locateFile: (file) => {
+            return `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`;
+        }});
 
-        function changeBackground(index) {
-            currentBackground = index - 1;
-        }
+        selfieSegmentation.setOptions({
+            modelSelection: 1
+        });
 
-        async function run() {
-            const video = await setupWebcam();
-            const canvas = document.getElementById('canvas');
-            const ctx = canvas.getContext('2d');
-            canvas.width = 640;
-            canvas.height = 480;
+        selfieSegmentation.onResults(onResults);
 
-            net = await bodyPix.load();
+        function onResults(results) {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
 
-            async function updateFrame() {
-                const segmentation = await net.segmentPerson(video, {
-                    flipHorizontal: false,
-                    internalResolution: 'high',
-                    segmentationThreshold: 0.7
-                });
+            // Draw the selected background
+            const bgImage = new Image();
+            bgImage.src = backgrounds[selectedBackground];
 
-                // Draw the selected background image
-                ctx.drawImage(backgroundImages[currentBackground], 0, 0, canvas.width, canvas.height);
-
-                const mask = bodyPix.toMask(segmentation, { r: 0, g: 0, b: 0, a: 255 }, { r: 0, g: 0, b: 0, a: 0 });
-                ctx.putImageData(mask, 0, 0);
-
-                // Composite the segmented person onto the background
+            bgImage.onload = function() {
+                ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
                 ctx.globalCompositeOperation = 'source-in';
+                ctx.drawImage(results.segmentationMask, 0, 0, canvas.width, canvas.height);
+                ctx.globalCompositeOperation = 'destination-atop';
                 ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
                 ctx.globalCompositeOperation = 'source-over';
-
-                // Request the next frame
-                requestAnimationFrame(updateFrame);
             }
-
-            updateFrame(); // Start the loop
         }
 
-        window.onload = async () => {
-            await loadBackgroundImages();
-            await setupWebcam();
-            run();
-        };
+        // Set up the camera
+        const camera = new Camera(video, {
+            onFrame: async () => {
+                await selfieSegmentation.send({image: video});
+            },
+            width: 640,
+            height: 480
+        });
+        camera.start();
+
+        // Button event listeners to change the background
+        document.getElementById('bg1').addEventListener('click', () => {
+            selectedBackground = 0;
+        });
+
+        document.getElementById('bg2').addEventListener('click', () => {
+            selectedBackground = 1;
+        });
+
+        document.getElementById('bg3').addEventListener('click', () => {
+            selectedBackground = 2;
+        });
     </script>
 </body>
 </html>
