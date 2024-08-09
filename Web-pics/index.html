@@ -32,10 +32,6 @@
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
 
-        // Load the background image
-        const backgroundImage = new Image();
-        backgroundImage.src = 'background1.jpg';
-
         const selfieSegmentation = new SelfieSegmentation({locateFile: (file) => {
             return `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`;
         }});
@@ -50,25 +46,18 @@
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
 
-            // Draw the background image
+            ctx.save();
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw background first
             ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
 
-            // Create a mask from the segmentation result
-            const maskImageData = ctx.createImageData(canvas.width, canvas.height);
-            for (let i = 0; i < maskImageData.data.length; i += 4) {
-                const alpha = results.segmentationMask.data[i / 4] * 255;
-                maskImageData.data[i] = alpha;  // Red
-                maskImageData.data[i + 1] = alpha;  // Green
-                maskImageData.data[i + 2] = alpha;  // Blue
-                maskImageData.data[i + 3] = alpha;  // Alpha
-            }
-
-            ctx.putImageData(maskImageData, 0, 0);
-
-            // Composite the foreground (video feed) on top of the background
+            // Draw only the segmented person
             ctx.globalCompositeOperation = 'source-in';
+            ctx.drawImage(results.segmentationMask, 0, 0, canvas.width, canvas.height);
+            ctx.globalCompositeOperation = 'destination-atop';
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-            ctx.globalCompositeOperation = 'source-over';
+            ctx.restore();
         }
 
         const camera = new Camera(video, {
@@ -78,6 +67,10 @@
             width: 640,
             height: 480
         });
+
+        const backgroundImage = new Image();
+        backgroundImage.src = 'background1.jpg';
+
         camera.start();
     </script>
 </body>
