@@ -6,18 +6,14 @@
     <title>Background Replacement</title>
     <style>
         video {
-            position: absolute;
-            top: 0;
-            left: 0;
+            display: none;
         }
-        #canvas {
+        canvas {
             position: absolute;
             top: 0;
             left: 0;
         }
         button {
-            position: relative;
-            z-index: 100;
             margin: 10px;
             font-size: 18px;
         }
@@ -45,7 +41,13 @@
             'background3.jpg'
         ];
 
-        // Set up the MediaPipe Selfie Segmentation model
+        const bgImages = [];
+        for (let i = 0; i < backgrounds.length; i++) {
+            const img = new Image();
+            img.src = backgrounds[i];
+            bgImages.push(img);
+        }
+
         const selfieSegmentation = new SelfieSegmentation({locateFile: (file) => {
             return `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`;
         }});
@@ -61,20 +63,26 @@
             canvas.height = video.videoHeight;
 
             // Draw the selected background
-            const bgImage = new Image();
-            bgImage.src = backgrounds[selectedBackground];
+            ctx.drawImage(bgImages[selectedBackground], 0, 0, canvas.width, canvas.height);
 
-            bgImage.onload = function() {
-                ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
-                ctx.globalCompositeOperation = 'source-in';
-                ctx.drawImage(results.segmentationMask, 0, 0, canvas.width, canvas.height);
-                ctx.globalCompositeOperation = 'destination-atop';
-                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-                ctx.globalCompositeOperation = 'source-over';
+            // Create a mask from the segmentation result
+            const maskImageData = ctx.createImageData(canvas.width, canvas.height);
+            for (let i = 0; i < maskImageData.data.length; i += 4) {
+                const alpha = results.segmentationMask.data[i / 4] * 255;
+                maskImageData.data[i] = alpha;  // Red
+                maskImageData.data[i + 1] = alpha;  // Green
+                maskImageData.data[i + 2] = alpha;  // Blue
+                maskImageData.data[i + 3] = alpha;  // Alpha
             }
+
+            ctx.putImageData(maskImageData, 0, 0);
+
+            // Composite the foreground on top of the background
+            ctx.globalCompositeOperation = 'source-in';
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            ctx.globalCompositeOperation = 'source-over';
         }
 
-        // Set up the camera
         const camera = new Camera(video, {
             onFrame: async () => {
                 await selfieSegmentation.send({image: video});
