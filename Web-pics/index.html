@@ -52,14 +52,16 @@
             // Draw the background image first
             ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
 
-            // Draw the segmentation mask, keeping only the person
+            // Use the segmentation mask to keep the person visible
             ctx.globalCompositeOperation = 'destination-atop';
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-            ctx.globalCompositeOperation = 'destination-in';
             ctx.drawImage(results.segmentationMask, 0, 0, canvas.width, canvas.height);
 
-            ctx.globalCompositeOperation = 'source-over'; // Reset to default
+            // Draw the original video feed on top of the masked background
+            ctx.globalCompositeOperation = 'source-in';
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            // Reset to default
+            ctx.globalCompositeOperation = 'source-over';
         }
 
         const camera = new Camera(video, {
