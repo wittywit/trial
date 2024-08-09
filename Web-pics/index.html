@@ -1,89 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Webcam Background Replacement</title>
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            flex-direction: column;
-        }
-        video, canvas {
-            display: block;
-            margin-bottom: 10px;
-            width: 640px;
-            height: 480px;
-        }
-        button {
-            margin: 5px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Webcam Background Replacement</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      flex-direction: column;
+    }
+    video, canvas {
+      display: block;
+      margin-bottom: 10px;
+      width: 640px;
+      height: 480px;
+    }
+    button {
+      margin: 5px;
+    }
+  </style>
 </head>
 <body>
-    <video id="video" autoplay></video>
-    <canvas id="canvas"></canvas>
-    <div>
-        <button onclick="changeBackground('background1.jpg')">Background 1</button>
-        <button onclick="changeBackground('background2.jpg')">Background 2</button>
-        <button onclick="changeBackground('background3.jpg')">Background 3</button>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils"></script>
+  <video id="video" autoplay></video>
+  <canvas id="canvas"></canvas>
+  <div>
+    <button onclick="changeBackground('background1.jpg')">Background 1</button>
+    <button onclick="changeBackground('background2.jpg')">Background 2</button>
+    <button onclick="changeBackground('background3.jpg')">Background 3</button>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils"></script>
 
-    <script>
-        const video = document.getElementById('video');
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
+  <script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
 
-        let currentBackground = new Image();
-        currentBackground.src = 'background1.jpg'; // Default background
+    let currentBackground = new Image();
+    currentBackground.src = 'background1.jpg'; // Default background
 
-        const selfieSegmentation = new SelfieSegmentation({locateFile: (file) => {
-            return `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`;
-        }});
+    const selfieSegmentation = new SelfieSegmentation({
+      locateFile: (file) => {
+        return `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`;
+      }
+    });
 
-        selfieSegmentation.setOptions({
-            modelSelection: 1
-        });
+    selfieSegmentation.setOptions({
+      modelSelection: 1 // Select the first segmentation model (general)
+    });
 
-        selfieSegmentation.onResults(onResults);
+    selfieSegmentation.onResults(onResults);
 
-        function onResults(results) {
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
+    function onResults(results) {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
 
-            ctx.save();
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.save();
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Draw background first
-            ctx.drawImage(currentBackground, 0, 0, canvas.width, canvas.height);
+      // Draw the background first
+      ctx.drawImage(currentBackground, 0, 0, canvas.width, canvas.height);
 
-            // Draw only the segmented person
-            ctx.globalCompositeOperation = 'source-in';
-            ctx.drawImage(results.segmentationMask, 0, 0, canvas.width, canvas.height);
-            ctx.globalCompositeOperation = 'destination-atop';
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-            ctx.restore();
-        }
+      // Extract the foreground (person) from the segmentation mask
+      const foreground = createImageBitmap(results.segmentationMask);
 
-        function changeBackground(imageSrc) {
-            currentBackground.src = imageSrc;
-        }
+      // Draw the foreground on top of the background
+      ctx.drawImage(foreground, 0, 0, canvas.width, canvas.height);
 
-        const camera = new Camera(video, {
-            onFrame: async () => {
-                await selfieSegmentation.send({image: video});
-            },
-            width: 640,
-            height: 480
-        });
+      ctx.restore();
+    }
 
-        camera.start();
-    </script>
+    function changeBackground(imageSrc) {
+      currentBackground.src = imageSrc;
+    }
+
+    const camera = new Camera(video, {
+      onFrame: async () => {
+        await selfieSegmentation.send({ image: video });
+      },
+      width: 640,
+      height: 480
+    });
+
+    camera.start();
+  </script>
 </body>
 </html>
