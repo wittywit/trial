@@ -4,68 +4,69 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Background Replacement</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/body-pix"></script>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+        canvas {
+            border: 1px solid black;
+        }
+        .button-container {
+            margin-top: 10px;
+        }
+        button {
+            padding: 10px;
+            margin: 5px;
+        }
+    </style>
 </head>
 <body>
     <h1>Background Replacement</h1>
-    <video id="webcam" autoplay playsinline></video>
     <canvas id="canvas"></canvas>
-    <div>
+    <div class="button-container">
         <button onclick="changeBackground(1)">Background 1</button>
         <button onclick="changeBackground(2)">Background 2</button>
         <button onclick="changeBackground(3)">Background 3</button>
     </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/body-pix"></script>
+
     <script>
         let net;
         let backgroundImages = [];
         let currentBackground = 0;
 
         async function setupWebcam() {
-            const webcamElement = document.getElementById('webcam');
-            const stream = await navigator.mediaDevices.getUserMedia({
-                video: true
-            });
-            webcamElement.srcObject = stream;
-
-            return new Promise((resolve) => {
-                webcamElement.onloadedmetadata = () => {
-                    resolve(webcamElement);
-                };
-            });
+            const webcamElement = document.createElement('video');
+            webcamElement.setAttribute('autoplay', '');
+            webcamElement.setAttribute('muted', '');
+            webcamElement.setAttribute('playsinline', '');
+            document.body.appendChild(webcamElement);
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: true
+                });
+                webcamElement.srcObject = stream;
+                
+                return new Promise((resolve) => {
+                    webcamElement.onloadedmetadata = () => {
+                        resolve(webcamElement);
+                    };
+                });
+            } catch (error) {
+                console.error("Error accessing webcam: ", error);
+                alert("Could not access the camera. Please ensure you have granted the necessary permissions.");
+            }
         }
 
         async function loadBackgroundImages() {
             for (let i = 1; i <= 3; i++) {
                 const img = new Image();
-                img.src = `background${i}.jpg`;
+                img.src = `background${i}.jpg`; // Ensure these files are in the same directory
                 await img.decode();
                 backgroundImages.push(img);
-            }
-        }
-
-        async function run() {
-            const video = await setupWebcam();
-            const canvas = document.getElementById('canvas');
-            const ctx = canvas.getContext('2d');
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-
-            net = await bodyPix.load();
-
-            while (true) {
-                const segmentation = await net.segmentPerson(video);
-
-                ctx.drawImage(backgroundImages[currentBackground], 0, 0, canvas.width, canvas.height);
-
-                const mask = bodyPix.toMask(segmentation);
-                ctx.putImageData(mask, 0, 0);
-
-                ctx.globalCompositeOperation = 'source-in';
-                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-                ctx.globalCompositeOperation = 'source-over';
-
-                await tf.nextFrame();
             }
         }
 
@@ -73,8 +74,43 @@
             currentBackground = index - 1;
         }
 
+        async function run() {
+            const video = await setupWebcam();
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 640;
+            canvas.height = 480;
+
+            net = await bodyPix.load();
+
+            async function updateFrame() {
+                const segmentation = await net.segmentPerson(video, {
+                    flipHorizontal: false,
+                    internalResolution: 'high',
+                    segmentationThreshold: 0.7
+                });
+
+                // Draw the selected background image
+                ctx.drawImage(backgroundImages[currentBackground], 0, 0, canvas.width, canvas.height);
+
+                const mask = bodyPix.toMask(segmentation, { r: 0, g: 0, b: 0, a: 255 }, { r: 0, g: 0, b: 0, a: 0 });
+                ctx.putImageData(mask, 0, 0);
+
+                // Composite the segmented person onto the background
+                ctx.globalCompositeOperation = 'source-in';
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                ctx.globalCompositeOperation = 'source-over';
+
+                // Request the next frame
+                requestAnimationFrame(updateFrame);
+            }
+
+            updateFrame(); // Start the loop
+        }
+
         window.onload = async () => {
             await loadBackgroundImages();
+            await setupWebcam();
             run();
         };
     </script>
