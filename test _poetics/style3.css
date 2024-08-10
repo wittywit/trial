@@ -348,8 +348,9 @@ main {
 
 @media screen and (max-width: 768px) {
     .content {
-        height: 80vh; /* Ensure full height on smaller screens */
+        height: 95vh; /* Ensure full height on smaller screens */
         padding: 0; /* Remove padding to maximize height */
+	margin-top:5%;
     }
 	
 	  .content p {
