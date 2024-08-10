@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+	<head>
+		<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Studio Poetics | Interactions Design Studio</title>
+<meta name="description" content="Studio Poetics is an Interactions Design Studio specializing in creating beautiful and poetic interactions in everyday design. Explore our work in SVG filters, custom cursors, and interactive web design.">
+<meta name="keywords" content="interaction design, design studio, SVG filters, custom cursors, web animation, interactive design, frontend development">
+<meta name="author" content="Studio Poetics">
+<link rel="shortcut icon" href="favicon.ico">
+<link rel="stylesheet" href="https://use.typekit.net/gdg8keg.css">
+<link rel="stylesheet" type="text/css" href="style3.css">
+
+		<script>document.documentElement.className = "js";
+var supportsCssVars = function supportsCssVars() {
+  var e,
+    t = document.createElement("style");
+  return t.innerHTML = "root: { --tmp-var: bold; }", document.head.appendChild(t), e = !!(window.CSS && window.CSS.supports && window.CSS.supports("font-weight", "var(--tmp-var)")), t.parentNode.removeChild(t), e;
+};
+supportsCssVars() || alert("Please view this demo in a modern browser that supports CSS Variables.");</script>
+	</head>
+	<body>
+		<main>
+			<div class="frame">
+				<img src="./image/logo.svg" alt="Studio Poetics Logo" class="logo">
+				<div class="frame__links">
+					<a href="https://tympanus.net/codrops/?p=48725">About Us</a>
+					<a href="https://github.com/codrops/AnimatedCustomCursor/">Contact</a>
+				</div>
+			</div>
+			<div class="content">
+				<p>At Studio Poetics, we shape <a>perceptions</a> through careful <a>observation</a> and <a>reflect</a> on them through our <a>research</a>. Our offerings include <a>UXconsultancy</a> and <a>game development</a>, all while exploring the <a>poetics of the ordinary</a>.<br><a>let's talk</a>!</p>
+			</div>
+		</main>
+		    <div class="container">
+        <main>
+            <div class="poem-list">
+                <div class="poem-item"><a>
+                    <span class="poem-number">.01</span>
+                    <span class="poem-title">UX Consultancy</span>
+                    <span class="arrow">→</span></a>
+                </div>
+                <div class="poem-item"><a>
+                    <span class="poem-number">.02</span>
+                    <span class="poem-title">Games and Interactions</span>
+                    <span class="arrow">→</span></a>
+                </div>
+                <div class="poem-item"><a>
+                    <span class="poem-number">.03</span>
+                    <span class="poem-title">Poetics of Ordinary</span>
+                    <span class="arrow">→</span></a>
+                </div>
+                <div class="poem-item"><a>
+                    <span class="poem-number">.04</span>
+                    <span class="poem-title">Research lab</span>
+                    <span class="arrow">→</span></a>
+                </div>
+                <div class="poem-item"><a>
+                    <span class="poem-number">.05</span>
+                    <span class="poem-title">Contact</span>
+                    <span class="arrow">→</span></a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+<svg width="0" height="0" xmlns="http://www.w3.org/2000/svg">
+  <filter id="wave">
+    <feTurbulence x="0" y="0" baseFrequency="0.009" numOctaves="5" seed="1">
+      <animate attributeName="baseFrequency" dur="100s" values="0.02;0.005;0.02" repeatCount="indefinite"/>
+    </feTurbulence>
+    <feDisplacementMap in="SourceGraphic" scale="30" />
+  </filter>
+</svg>
+		<svg class="cursor" width="280" height="280" viewBox="0 0 280 280">
+			<defs>
+				<filter id="filter-1" x="-50%" y="-50%" width="200%" height="200%" filterUnits="objectBoundingBox">
+					<feTurbulence type="fractalNoise" baseFrequency="0.02 0.15" numOctaves="3" result="warp"></feTurbulence>
+					<feDisplacementMap xChannelSelector="R" yChannelSelector="G" scale="0" in="SourceGraphic" in2="warp"></feDisplacementMap>
+				</filter>
+			</defs>
+			<circle class="cursor__inner" cx="140" cy="140" r="50"></circle>
+		</svg>
+		
+		
+		<script src="script.js"></script>
+	</body>
+</html>

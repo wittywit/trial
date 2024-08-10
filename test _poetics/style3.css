@@ -1,0 +1,358 @@
+/* General Reset and Box Sizing */
+*, *::after, *::before {
+    box-sizing: border-box;
+}
+
+:root {
+    font-size: 15px;
+    --color-text: #ffffff;
+    --color-bg: #0e0e0e;
+    --color-link: #d20d4c;
+    --color-link-hover: #ffffff;
+    --color-content: #4e4e4e;
+    --color-menu-link: #d20d4c;
+    --color-menu-link-hover: #ffffff;
+    --font-alt: freight-display-pro, serif;
+    --cursor-stroke: #ffffff;
+    --cursor-fill: none;
+    --cursor-stroke-width: 1px;
+}
+
+/* Body Styling */
+body {
+    margin: 0;
+    color: var(--color-text);
+    background-color: var(--color-bg);
+    font-family: soleil, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Links Styling */
+a {
+    text-decoration: none;
+    color: var(--color-link);
+    outline: none;
+    cursor: pointer;
+}
+
+a:hover, a:focus {
+    color: var(--color-link-hover);
+    outline: none;
+}
+
+/* Logo Styling */
+.logo {
+    position: fixed;
+    top: 1rem; /* Adjust the distance from the top */
+    left: 1rem; /* Adjust the distance from the left */
+    height: 50px;
+    width: auto;
+    z-index: 1000; /* Ensure it stays on top */
+}
+
+/* Message Styling */
+.message {
+    background: var(--color-text);
+    color: var(--color-bg);
+    padding: 1rem;
+    text-align: center;
+}
+
+/* Frame Styling */
+.frame {
+    padding: 3rem 5vw;
+    text-align: center;
+    position: fixed; /* Changed to fixed to keep it in view */
+    top: 0;
+    right: 0;
+    z-index: 1000;
+    width: auto; /* Adjust width as needed */
+    max-width: 300px; /* Set a max-width to prevent it from being too wide */
+}
+
+.frame__title {
+    font-size: 1rem;
+    margin: 0 0 1rem;
+    font-weight: inherit;
+}
+
+.frame__links, .frame__demos {
+    display: block;
+}
+
+.frame__links > *:not(:last-child),
+.frame__demos > *:not(:last-child) {
+    margin-right: 1rem;
+}
+
+.frame__demos {
+    margin: 1rem 0;
+}
+
+.frame__demos span {
+    font-weight: bold;
+    color: var(--color-link);
+}
+
+.frame__initials {
+    font-family: var(--font-alt);
+    font-size: 1.5rem;
+    pointer-events: none;
+    line-height: 18px;
+    position: absolute; /* Ensure it’s positioned relative to the frame */
+    top: 1rem; /* Distance from the top of the frame */
+    right: 1rem; /* Distance from the right of the frame */
+}
+
+.frame__demos {
+    position: absolute; /* Ensure it’s positioned relative to the frame */
+    bottom: 1rem; /* Distance from the bottom of the frame */
+    right: 1rem; /* Distance from the right of the frame */
+}
+
+/* Content Styling */
+.content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Center content vertically */
+    align-items: center; /* Center content horizontally */
+    width: 100vw;
+    height: 100vh; /* Full viewport height */
+    padding: 0; /* Remove padding to utilize full height */
+    margin: 0; /* Remove margin to utilize full height */
+    box-sizing: border-box; /* Ensure padding and border are included in the element’s total width and height */
+}
+
+.content p {
+    max-width: 80vw;
+    font-size: 4.5vw;
+    color: var(--color-content);
+    font-family: var(--font-alt);
+    font-weight: 300;
+    line-height: 1.4;
+}
+
+.content p a {
+    font-style: italic;
+    position: relative;
+}
+
+.content p a::after { 
+    content: ''; 
+    position: absolute; 
+    width: 100%; 
+    height: 1px; 
+    background: currentColor; 
+    bottom: 0.5vw; 
+    left: 0; 
+    opacity: 0; 
+    transform-origin: 0% 50%; 
+    transform: scaleX(0); 
+    transition: all 0.25s ease-out; 
+} 
+
+.content p a:hover::after, 
+.content p a:focus::after { 
+    opacity: 1; 
+    transform: scaleX(1); 
+}
+
+/* Menu Styling */
+.menu {
+    display: flex;
+    overflow: hidden;
+    width: 100vw;
+    justify-content: center;
+}
+
+.menu__item {
+    font-size: 6.5vw;
+    margin: 0 2vw;
+    cursor: default;
+    font-family: var(--font-alt);
+    color: var(--color-menu-link);
+}
+
+.menu__item:hover, .menu__item:focus {
+    color: var(--color-menu-link-hover);
+}
+
+/* Cursor Styling */
+.cursor {
+    display: none;
+}
+
+@media (any-pointer: fine) {
+    .cursor {
+        position: fixed;
+        top: 0;
+        left: 0;
+        display: block;
+        pointer-events: none;
+        opacity: 0;
+    }
+
+    .cursor__inner {
+        fill: var(--cursor-fill);
+        stroke: var(--cursor-stroke);
+        stroke-width: var(--cursor-stroke-width);
+    }
+}
+
+/* Container Styling */
+.container {
+    width: 100%;
+    height: 100%;
+    background-color: #0e0e0e;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+nav a {
+    margin-left: 20px;
+    text-decoration: none;
+    color: #d20d4c;
+    font-size: 1.2em;
+}
+
+main {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.poem-list {
+    border-top: 1px solid #d20d4c;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    overflow-y: auto;
+}
+
+.poem-item {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 20px 0;
+    border-bottom: 1px solid #D94A43;
+    transition: color 0.3s, background-color 0.3s;
+    position: relative;
+}
+
+.poem-item:hover {
+    color: black;
+    background-color: #333;
+}
+
+.poem-item:hover .poem-title, .poem-item:hover .poem-number {
+    color: white;
+}
+
+.poem-item:hover .arrow {
+    display: inline;
+    color: white;
+}
+
+.poem-number {
+    color: #d20d4c;
+    transition: color 0.3s;
+    font-size: 1.2em;
+    margin-right: 10px;
+}
+
+.poem-title {
+    font-size: 4em;
+    color: #d20d4c;
+    transition: color 0.3s;
+}
+
+.poem-title.highlighted {
+    color: #2C2543;
+    font-weight: bold;
+}
+
+.arrow {
+    color: #2C2543;
+    font-size: 4em;
+    display: none;
+    transition: color 0.3s;
+    position: absolute;
+    right: 20px;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .poem-item {
+        padding: 10px 0;
+    }
+
+    .poem-title {
+        font-size: 2em;
+    }
+
+    .arrow {
+        font-size: 2em;
+    }
+}
+
+.custom-cursor {
+    position: absolute;
+    pointer-events: none;
+    z-index: 10000;
+    width: 40px;
+    height: 40px;
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    filter: url(#wave);
+}
+
+/* Responsive Styles for Frame */
+@media screen and (min-width: 53em) {
+    .frame {
+        display: grid;
+        align-content: space-between;
+        grid-template-columns: auto;
+        grid-template-rows: auto auto auto;
+        grid-template-areas: 
+            "title"
+            "initials"
+            "demos";
+    }
+
+    .frame__title {
+        grid-area: title;
+    }
+
+    .frame__initials {
+        grid-area: initials;
+    }
+
+    .frame__demos {
+        grid-area: demos;
+    }
+}
+
+
+@media screen and (max-width: 768px) {
+    .content {
+        height: 100vh; /* Ensure full height on smaller screens */
+        padding: 0; /* Remove padding to maximize height */
+    }
+	
+	  .content p {
+        font-size: 6vw; /* Increase font size for smaller screens */
+    }
+}
