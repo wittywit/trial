@@ -5,15 +5,15 @@
 
 :root {
     font-size: 15px;
-    --color-text: #ffffff;
-    --color-bg: #0e0e0e;
-    --color-link: #d20d4c;
-    --color-link-hover: #ffffff;
-    --color-content: #4e4e4e;
-    --color-menu-link: #d20d4c;
-    --color-menu-link-hover: #ffffff;
+    --color-text: #4A4A4A; /* Charcoal gray for text */
+    --color-bg: #F8F5F2; /* Soft beige background */
+    --color-link: #FF6F61; /* Pale coral for links */
+    --color-link-hover: #3AAFA9; /* Muted teal for hover state */
+    --color-content: #757575; /* Light gray for content */
+    --color-menu-link: #FF6F61; /* Pale coral for menu links */
+    --color-menu-link-hover: #3AAFA9; /* Muted teal for hover */
     --font-alt: freight-display-pro, serif;
-    --cursor-stroke: #ffffff;
+    --cursor-stroke: #4A4A4A; /* Charcoal gray for cursor stroke */
     --cursor-fill: none;
     --cursor-stroke-width: 1px;
 }
@@ -204,7 +204,7 @@ a:hover, a:focus {
 .container {
     width: 100%;
     height: 100%;
-    background-color: #0e0e0e;
+    background-color: var(--color-bg);
     padding: 20px;
     box-sizing: border-box;
     display: flex;
@@ -222,7 +222,7 @@ header {
 nav a {
     margin-left: 20px;
     text-decoration: none;
-    color: #d20d4c;
+    color: #FF6F61;
     font-size: 1.2em;
 }
 
@@ -234,11 +234,13 @@ main {
 }
 
 .poem-list {
-    border-top: 1px solid #d20d4c;
+    border-top: 1px solid #FF6F61;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
     overflow-y: auto;
+	font-family: var(--font-alt);
+	font-style: italic;
 }
 
 .poem-item {
@@ -246,14 +248,16 @@ main {
     align-items: center;
     justify-content: flex-start;
     padding: 20px 0;
-    border-bottom: 1px solid #D94A43;
+    border-bottom: 1px solid #FF6F61;
     transition: color 0.3s, background-color 0.3s;
     position: relative;
+	font-family: var(--font-alt);
+	font-style: italic;
 }
 
 .poem-item:hover {
     color: black;
-    background-color: #333;
+    background-color: #FF6F61;
 }
 
 .poem-item:hover .poem-title, .poem-item:hover .poem-number {
@@ -266,7 +270,7 @@ main {
 }
 
 .poem-number {
-    color: #d20d4c;
+    color: #FF6F61;
     transition: color 0.3s;
     font-size: 1.2em;
     margin-right: 10px;
@@ -274,7 +278,7 @@ main {
 
 .poem-title {
     font-size: 4em;
-    color: #d20d4c;
+    color: #FF6F61;
     transition: color 0.3s;
 }
 
@@ -348,12 +352,11 @@ main {
 
 @media screen and (max-width: 768px) {
     .content {
-        height: 95vh; /* Ensure full height on smaller screens */
+        height: 100vh; /* Ensure full height on smaller screens */
         padding: 0; /* Remove padding to maximize height */
-	margin-top:5%;
     }
 	
 	  .content p {
-        font-size: 2.1em; /* Increase font size for smaller screens */
+        font-size: 6vw; /* Increase font size for smaller screens */
     }
 }
