@@ -17,3 +17,9 @@ powershell -Command "(Get-Content webcam.js) | ForEach-Object { $_ -replace 'htt
 
 REM Clean up the Serveo URL file
 del serveo_url.txt
+
+
+
+
+
+let localImageUrl = https://8f342214a380c4ed504bd40b7f263193.serveo.net/${filename};
