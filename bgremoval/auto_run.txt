@@ -25,4 +25,4 @@ del serveo_url.txt
 
 
 
-let localImageUrl = https://8f342214a380c4ed504bd40b7f263193.serveo.net/${filename};
+
