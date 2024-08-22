@@ -1,16 +1,18 @@
 @echo off
+REM Start the Python HTTP server
+start python -m http.server 8000
 
-:: Start the Python HTTP server
-start cmd /c "python -m http.server 8000"
+REM Establish the Serveo.net tunnel
+REM The SSH command connects to serveo.net and forwards localhost:8000 to a public URL
+start ssh -R 80:localhost:8000 serveo.net
 
-:: Establish Serveo tunnel and capture the URL
-for /f "tokens=*" %%i in ('ssh -o "StrictHostKeyChecking no" -R 80:localhost:8000 serveo.net') do set "output=%%i"
-setlocal enabledelayedexpansion
-for /f "tokens=1,2 delims= " %%a in ("!output!") do set "serveo_url=%%b"
+REM Wait a few seconds to ensure the tunnel is up
+timeout /t 10 > nul
 
-:: Update the JavaScript file with the new Serveo URL
-powershell -Command "(gc webcam.js) -replace 'https://[a-z0-9]*.serveo.net/', 'https://%serveo_url%/' | Out-File -encoding ASCII webcam.js"
+REM Capture the Serveo URL and update the webcam.js file
+for /f "tokens=2 delims=:" %%i in ('curl http://localhost:8000') do (
+    set url=%%i
+)
 
-:: Notify that the process is complete
-echo Serveo URL has been updated in webcam.js
-pause
+REM Update the webcam.js file with the new URL
+powershell -Command "(Get-Content webcam.js) -replace 'https://.*\.serveo\.net', 'https://%url%.serveo.net' | Set-Content webcam.js"
