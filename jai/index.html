@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Teachiable Machine with P5.js</title>
+  <link rel="stylesheet" href="./style.css">
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<div class="container">
+    <header>
+      <h1>DIVINE POSES</h1>
+      <div class="subtitle">✧ A JOURNEY THROUGH SACRED MOVEMENT ✧</div>
+    </header>
+    
+    <button class="start-button" type="button" onclick="init()">Begin Experience</button>
+    
+    <div class="canvas-container">
+      <canvas id="canvas"></canvas>
+      <img class="mandala-overlay" src="/api/placeholder/600/600" alt="Mandala overlay">
+    </div>
+    
+    <div id="label-container"></div>
+    
+    <div class="footer">
+      Created with TensorFlow.js • 
+    </div>
+    
+    <div class="floating-element lotus">
+      <svg viewBox="0 0 100 100" fill="var(--gold)">
+        <path d="M50,5 C60,30 90,40 95,50 C90,60 60,70 50,95 C40,70 10,60 5,50 C10,40 40,30 50,5 Z"></path>
+      </svg>
+    </div>
+    
+    <div class="floating-element pillar">
+      <svg viewBox="0 0 50 200" fill="var(--secondary)">
+        <rect x="10" y="10" width="30" height="180" rx="5"></rect>
+      </svg>
+    </div>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@teachablemachine/pose@0.8/dist/teachablemachine-pose.min.js"></script>
+<!-- partial -->
+  <script  src="./script.js"></script>
+
+</body>
+</html>
